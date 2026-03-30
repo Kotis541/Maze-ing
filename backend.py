@@ -1,1 +1,1 @@
-s
+ahoj jak se mas gadzi
