@@ -26,7 +26,7 @@ def read_config() -> dict:
                     raise ValueError(f"ENTRY: {exit_err}")
                 else:
                     res['ENTRY'] = (int(exit_err[0]), int(exit_err[1]))
-               
+
                 exit_err = res['EXIT'].split(",")
                 if len(exit_err) != 2:
                     raise ValueError(f"EXIT: {exit_err}")
@@ -36,7 +36,10 @@ def read_config() -> dict:
                 bool_map = {"TRUE": True, "FALSE": False}
                 res['PERFECT'] = bool_map[res['PERFECT'].upper()]
             except KeyError as e:
-                print(f"Configuration Error: Missing or misspelled mandatory key {e}")
+                print(
+                    "Configuration Error: Missing or",
+                    f"misspelled mandatory key {e}"
+                    )
                 return None
             except ValueError as e:
                 print(f"Configuration Error: Invalid data format or value {e}")
@@ -47,6 +50,3 @@ def read_config() -> dict:
         return res
     else:
         print("No valid configuration file, please try again!")
-
-
-read_config()
