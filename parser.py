@@ -20,13 +20,26 @@ def read_config() -> dict:
             try:
                 res['WIDTH'] = int(res['WIDTH'])
                 res['HEIGHT'] = int(res['HEIGHT'])
-                res['ENTRY'] = int(res['ENTRY'].split(","))
-                res['EXIT'] = (int(res['EXIT'].split(",")))
-            except (ValueError, KeyError) as e:
+
+                exit_err = res['ENTRY'].split(",")
+                if len(exit_err) != 2:
+                    raise ValueError("Invalid configuration file")
+                else:
+                    res['ENTRY'] = (int(exit_err[0]), int(exit_err[1]))
+               
+                exit_err = res['EXIT'].split(",")
+                if len(exit_err) != 2:
+                    raise ValueError("Invalid configuration file")
+                else:
+                    res['EXIT'] = (int(exit_err[0]), int(exit_err[1]))
+
+                bool_map = {"TRUE": True, "FALSE": False}
+                res['PERFECT'] = bool_map[res['PERFECT'].upper()]
+            except Exception as e:
                 print(e)
+                return None
         return res
     else:
         print("No valid configuration file, please try again!")
 
 
-print(read_config())
