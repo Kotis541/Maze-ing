@@ -40,6 +40,7 @@ def read_config() -> dict:
                 return None
             except ValueError as e:
                 print(f"Configuration Error: Invalid data format or value {e}")
+                return None
             except Exception as e:
                 print(f"An unxepected error occured: {e}")
                 return None
