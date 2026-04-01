@@ -1,6 +1,7 @@
 import random
 import math
 
+
 class MazeGenerator():
     def __init__(self, config: dict):
         self._width = config['WIDTH']
@@ -19,6 +20,7 @@ class MazeGenerator():
                 maze[i].append([1, 1, 1, 1])
         return maze
 
+# START A EXIT NESMI BYT V LOGU!!!!
     def _was_visited(self, width: int, height: int) -> bool:
         if self._width >= 9 and self._height >= 7:
             c_width = math.ceil(self._width / 2)
