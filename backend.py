@@ -1,4 +1,5 @@
 import random
+import math
 
 class MazeGenerator():
     def __init__(self, config: dict):
@@ -11,7 +12,7 @@ class MazeGenerator():
         self._maze = self._maze_init()
 
     def _maze_init(self) -> list[list[list]]:
-        maze = []
+        maze: list[list[list]] = []
         for i in range(0, self._width):
             maze.append([])
             for j in range(0, self._height):
@@ -19,6 +20,12 @@ class MazeGenerator():
         return maze
 
     def _was_visited(self, width: int, height: int) -> bool:
+        if self._width >= 9 and self._height >= 7:
+            c_width = math.ceil(self._width / 2)
+            c_height = math.ceil(self._height / 2)
+            logo = [[c_width - 1, c_height]]
+            if [width, height] in logo:
+                return True
         return 0 in self._maze[width][height]
 
     def _get_unvisited_cells(self, x, y) -> list[list]:
@@ -57,7 +64,6 @@ class MazeGenerator():
                 self._maze[x1][y1][2] = 0
                 self._maze[x2][y2][0] = 0
 
-
     def generate_maze(self) -> list[list[list]]:
         path = [self._entry]
         while path:
@@ -78,14 +84,11 @@ class MazeGenerator():
         return self._maze
 
 
-
-
 ########  TESTING  ############
 
-config = {'WIDTH': 15, 'HEIGHT': 12, 'ENTRY': (0, 0), 'EXIT': (2, 2), 'OUTPUT_FILE': 'maze.txt', 'PERFECT': True}
+config = {'WIDTH': 9, 'HEIGHT': 7, 'ENTRY': (0, 0), 'EXIT': (2, 2), 'OUTPUT_FILE': 'maze.txt', 'PERFECT': True}
 maze = MazeGenerator(config)
 maze.generate_maze()
-
-## config je output co ti da parser
-## config je treba na vytvoreni maze objektu
-## obejkt.generate_maze() ti vrati 3D list s 1 0 
+# config je output co ti da parser
+# config je treba na vytvoreni maze objektu
+# obejkt.generate_maze() ti vrati 3D list s 1 0 
