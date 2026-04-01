@@ -7,6 +7,7 @@ class MazeGenerator():
         self._entry = config['ENTRY']
         self._exit = config['EXIT']
         self._perfect = config['PERFECT']
+        self._output = config['OUTPUT_FILE']
         self._maze = self._maze_init()
 
     def _maze_init(self) -> list[list[list]]:
@@ -66,6 +67,14 @@ class MazeGenerator():
             else:
                 path.append(random.choice(cells))
                 self._break_walls(path)
+        with open(self._output, "w") as f:
+            for y in range(0, self._height):
+                for x in range(0, self._width):
+                    z = self._maze[x][y][3] * 8 + self._maze[x][y][2] * 4
+                    z += self._maze[x][y][1] * 2 + self._maze[x][y][0] * 1
+                    f.write(f"{z:X}")
+                f.write("\n")
+            f.write(f"\n{str(self._entry)[1:-1]}\n{str(self._exit)[1:-1]}\n")
         return self._maze
 
 
@@ -73,9 +82,9 @@ class MazeGenerator():
 
 ########  TESTING  ############
 
-# config = {'WIDTH': 15, 'HEIGHT': 15, 'ENTRY': (0, 0), 'EXIT': (12, 10), 'OUTPUT_FILE': 'maze.txt', 'PERFECT': True}
-# maze = MazeGenerator(config)
-# print(maze.generate_maze())
+config = {'WIDTH': 15, 'HEIGHT': 15, 'ENTRY': (0, 0), 'EXIT': (12, 10), 'OUTPUT_FILE': 'maze.txt', 'PERFECT': True}
+maze = MazeGenerator(config)
+print(maze.generate_maze())
 
 ## config je output co ti da parser
 ## config je treba na vytvoreni maze objektu
