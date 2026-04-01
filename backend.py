@@ -86,9 +86,7 @@ class MazeGenerator():
 
 ########  TESTING  ############
 
-config = {'WIDTH': 9, 'HEIGHT': 7, 'ENTRY': (0, 0), 'EXIT': (2, 2), 'OUTPUT_FILE': 'maze.txt', 'PERFECT': True}
-maze = MazeGenerator(config)
-maze.generate_maze()
+
 # config je output co ti da parser
 # config je treba na vytvoreni maze objektu
 # obejkt.generate_maze() ti vrati 3D list s 1 0 
