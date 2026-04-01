@@ -73,9 +73,9 @@ class MazeGenerator():
 
 ########  TESTING  ############
 
-config = {'WIDTH': 15, 'HEIGHT': 15, 'ENTRY': (0, 0), 'EXIT': (12, 10), 'OUTPUT_FILE': 'maze.txt', 'PERFECT': True}
-maze = MazeGenerator(config)
-print(maze.generate_maze())
+# config = {'WIDTH': 15, 'HEIGHT': 15, 'ENTRY': (0, 0), 'EXIT': (12, 10), 'OUTPUT_FILE': 'maze.txt', 'PERFECT': True}
+# maze = MazeGenerator(config)
+# print(maze.generate_maze())
 
 ## config je output co ti da parser
 ## config je treba na vytvoreni maze objektu

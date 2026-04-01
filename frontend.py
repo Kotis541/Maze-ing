@@ -1,0 +1,131 @@
+from parser import read_config
+import sys
+import os
+from backend import MazeGenerator
+
+maze_10x10 = [
+    # Řádek 0
+    [[1, 0, 0, 1], [1, 0, 1, 0], [1, 0, 1, 0], [1, 0, 1, 0], [1, 1, 0, 0], [1, 0, 0, 1], [1, 0, 1, 0], [1, 0, 1, 0], [1, 0, 1, 0], [1, 1, 0, 0]],
+    # Řádek 1
+    [[0, 1, 0, 1], [1, 0, 0, 1], [1, 0, 0, 0], [1, 1, 0, 0], [0, 0, 1, 1], [0, 1, 0, 0], [1, 0, 0, 1], [1, 0, 0, 0], [1, 1, 0, 0], [0, 1, 0, 1]],
+    # Řádek 2
+    [[0, 0, 1, 1], [0, 0, 1, 0], [0, 0, 1, 0], [0, 1, 1, 0], [1, 0, 0, 1], [0, 1, 1, 0], [0, 0, 1, 1], [0, 0, 1, 0], [0, 0, 1, 0], [0, 1, 1, 0]],
+    # Řádek 3
+    [[1, 0, 0, 1], [1, 0, 0, 0], [1, 0, 0, 0], [1, 1, 0, 0], [0, 0, 1, 1], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 1, 0, 0]],
+    # Řádek 4
+    [[0, 1, 0, 1], [0, 1, 0, 1], [0, 1, 0, 1], [0, 1, 0, 1], [1, 0, 0, 1], [0, 1, 0, 0], [0, 1, 0, 1], [0, 1, 0, 1], [0, 1, 0, 1], [0, 1, 0, 1]],
+    # Řádek 5
+    [[0, 0, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 0, 0]],
+    # Řádek 6
+    [[0, 1, 1, 1], [0, 1, 1, 1], [0, 1, 1, 1], [0, 1, 1, 1], [1, 0, 0, 1], [0, 1, 1, 0], [0, 1, 1, 1], [0, 1, 1, 1], [0, 1, 1, 1], [0, 1, 1, 1]],
+    # Řádek 7
+    [[1, 0, 0, 1], [1, 0, 0, 0], [1, 0, 0, 0], [1, 1, 0, 0], [0, 0, 1, 1], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 1, 0, 0]],
+    # Řádek 8
+    [[0, 0, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 0, 0], [1, 0, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 0, 0]],
+    # Řádek 9
+    [[0, 0, 1, 1], [0, 0, 1, 0], [0, 0, 1, 0], [0, 1, 1, 0], [0, 0, 1, 1], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 1, 1, 0]]
+]
+        # [S, V, J, Z]
+
+#     ------- ^ -------  [Sever, Východ, Jih, Západ]
+#           sever
+#   <zapad        vychod>
+#           jih
+#     -------   ------- 
+
+N = 0 # sever
+E = 1 # vychod
+S = 2 # jih
+W = 3 # zapad
+
+RESET = "\033[0m"
+WALL = "\033[42m"
+PATH = "\033[40m"
+ENTRY = "\033[44m"
+EXIT = "\033[41m"
+
+
+def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple) -> None:
+    width = len(maze)
+    height = len(maze[0]) if width else 0
+
+    grid_h = height * 2 + 1
+    grid_w = width * 2 + 1
+    grid = [[1 for _ in range(grid_w)] for _ in range(grid_h)]
+
+    for y in range(height):
+        for x in range(width):
+            cell = maze[x][y]
+            cy = y * 2 + 1
+            cx = x * 2 + 1
+            grid[cy][cx] = 0
+
+            if cell[N] == 0:
+                grid[cy - 1][cx] = 0
+            if cell[S] == 0:
+                grid[cy + 1][cx] = 0
+            if cell[W] == 0:
+                grid[cy][cx - 1] = 0
+            if cell[E] == 0:
+                grid[cy][cx + 1] = 0
+
+    entry_pos = (entry[0] * 2 + 1, entry[1] * 2 + 1)
+    exit_pos = (exit[0] * 2 + 1, exit[1] * 2 + 1)
+
+    for gy in range(grid_h):
+        for gx in range(grid_w):
+            if (gx, gy) == entry_pos:
+                print(f"{ENTRY}  {RESET}", end="")
+            elif (gx, gy) == exit_pos:
+                print(f"{EXIT}  {RESET}", end="")
+            elif grid[gy][gx] == 1:
+                print(f"{WALL}  {RESET}", end="")
+            else:
+                print(f"{PATH}  {RESET}", end="")
+        print()
+
+def change_visibility():
+    pass
+
+
+def change_color():
+    colors = [
+        "\033[47m",
+        "\033[42m",
+        "\033[43m",
+        "\033[45m",
+        "\033[46m",
+    ]
+    while True:
+        for color in colors:
+            yield color
+
+
+while 1:
+    print()
+    # os.system('clear')
+    print("=== A-Maze-ing ===")
+    print("1. Re-generate a new maze")
+    print("2. Show/Hide path from entry to exit")
+    print("3. Rotate maze colors")
+    print("4. Quit")
+
+    try:
+        user_input = int(input("Choice? (1 - 4): "))
+    except ValueError:
+        print("Please choose between 1 - 4!")
+        continue
+    if user_input == 1:
+        config = read_config()
+        maze = MazeGenerator(config)
+        genereted_list = maze.generate_maze()
+        render_maze(genereted_list, config['ENTRY'], config['EXIT'])
+    elif user_input == 2:
+        next(change_visibility())
+    elif user_input == 3:
+        change_color()
+    elif user_input == 4:
+        sys.exit()
+        break
+    else:
+        print("Please choose between 1 - 4")
