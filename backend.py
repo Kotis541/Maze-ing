@@ -17,7 +17,7 @@ class MazeGenerator():
                 maze[i].append([1, 1, 1, 1])
         return maze
 
-    def _was_visited(self, height: int, width: int) -> bool:
+    def _was_visited(self, width: int, height: int) -> bool:
         return 0 in self._maze[width][height]
 
     def _get_unvisited_cells(self, x, y) -> list[list]:
@@ -36,6 +36,27 @@ class MazeGenerator():
                 res.append([x + 1, y])
         return res
 
+    def _break_walls(self, path: list[list]) -> None:
+        x1 = path[-1][0]
+        x2 = path[-2][0]
+        y1 = path[-1][1]
+        y2 = path[-2][1]
+        if x1 != x2:
+            if x1 > x2:
+                self._maze[x1][y1][3] = 0
+                self._maze[x2][y2][1] = 0
+            else:
+                self._maze[x1][y1][1] = 0
+                self._maze[x2][y2][3] = 0
+        elif y1 != y2:
+            if y1 > y2:
+                self._maze[x1][y1][0] = 0
+                self._maze[x2][y2][2] = 0
+            else:
+                self._maze[x1][y1][2] = 0
+                self._maze[x2][y2][0] = 0
+
+
     def generate_maze(self) -> list[list[list]]:
         path = [self._entry]
         while path:
@@ -43,67 +64,19 @@ class MazeGenerator():
             if not cells:
                 path.pop()
             else:
-                print("x")
+                path.append(random.choice(cells))
+                self._break_walls(path)
+        return self._maze
+
 
 
 
 ########  TESTING  ############
-import sys
-import os
 
+config = {'WIDTH': 15, 'HEIGHT': 15, 'ENTRY': (0, 0), 'EXIT': (12, 10), 'OUTPUT_FILE': 'maze.txt', 'PERFECT': True}
+maze = MazeGenerator(config)
+print(maze.generate_maze())
 
-def read_config() -> dict:
-    res = {}
-    if len(sys.argv) != 2:
-        print("No valid configuration file, please try again!")
-    elif os.path.isfile(sys.argv[1]):
-        with open(sys.argv[1], 'r') as file:
-            for line in file:
-                if not line or line.startswith("#"):
-                    continue
-                if '=' in line:
-                    key, value = line.strip().split("=")
-                    res[key] = value
-                else:
-                    print("No valid configuration file, please try again!")
-                    return None
-            try:
-                res['WIDTH'] = int(res['WIDTH'])
-                res['HEIGHT'] = int(res['HEIGHT'])
-
-                exit_err = res['ENTRY'].split(",")
-                if len(exit_err) != 2:
-                    raise ValueError(f"ENTRY: {exit_err}")
-                else:
-                    res['ENTRY'] = (int(exit_err[0]), int(exit_err[1]))
-
-                exit_err = res['EXIT'].split(",")
-                if len(exit_err) != 2:
-                    raise ValueError(f"EXIT: {exit_err}")
-                else:
-                    res['EXIT'] = (int(exit_err[0]), int(exit_err[1]))
-
-                bool_map = {"TRUE": True, "FALSE": False}
-                res['PERFECT'] = bool_map[res['PERFECT'].upper()]
-            except KeyError as e:
-                print(
-                    "Configuration Error: Missing or",
-                    f"misspelled mandatory key {e}"
-                    )
-                return None
-            except ValueError as e:
-                print(f"Configuration Error: Invalid data format or value {e}")
-                return None
-            except Exception as e:
-                print(f"An unxepected error occured: {e}")
-                return None
-        return res
-    else:
-        print("No valid configuration file, please try again!")
-
-
-
-maze = MazeGenerator(read_config())
-print(maze._get_unvisited_cells(12, 10))
-
-                
+## config je output co ti da parser
+## config je treba na vytvoreni maze objektu
+## obejkt.generate_maze() ti vrati 3D list s 1 0 
