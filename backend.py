@@ -13,9 +13,11 @@ class MazeGenerator():
         self._maze = self._maze_init()
         if self._width >= 9 and self._height >= 7:
             self._logo = self._logo_init()
-            if list(self._entry) in self._logo or list(self._exit) in self._logo:
-                print("Current ENTRY or EXIT coordinates clash with 42 logo, try again")
-                raise ValueError("Current ENTRY or EXIT coordinates clash with 42 logo, try again")
+            if (list(self._entry) in self._logo
+                    or list(self._exit) in self._logo):
+                x = "ENTRY or EXIT coordinates clash with 42 logo, try again"
+                print(x)
+                raise ValueError({x})
         else:
             self._logo = []
 
@@ -106,8 +108,8 @@ class MazeGenerator():
 
     def _calc_h(self, x1: int, x2: int, y1: int, y2: int) -> int:
         return abs(x1 - x2) + abs(y1 - y2)
-    
+
     def find_path(self) -> list[list[int, int]]:
         open_set = [list(self._entry)]
         current = open_set[-1]
-   #     while path[-1] != current_pos:
+        print(current)
