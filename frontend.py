@@ -121,6 +121,10 @@ while True:
     except ValueError:
         print("[ERROR] - Please choose between 1 - 4!")
         continue
+    except KeyboardInterrupt:
+        print("\nThanks for playing our game!")
+        break
+
     if user_input == 1:
         try:
             config = read_config()
@@ -129,12 +133,15 @@ while True:
             render_maze(genereted_list, config['ENTRY'], config['EXIT'])
         except TypeError:
             exit()
+
     elif user_input == 2:
         change_visibility()
+
     elif user_input == 3:
         render_maze(genereted_list, config['ENTRY'], config['EXIT'], next(color_cycle))
+
     elif user_input == 4:
-        sys.exit()
         break
+
     else:
         print("[ERROR] - Please choose between 1 - 4")
