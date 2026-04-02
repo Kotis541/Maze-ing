@@ -46,13 +46,13 @@ def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple,
     for gy in range(grid_h):
         for gx in range(grid_w):
             if (gx, gy) == entry_pos:
-                print(f"{ENTRY}  {RESET}", end="")
+                print(f"{ENTRY} {RESET}", end="")
             elif (gx, gy) == exit_pos:
-                print(f"{EXIT}  {RESET}", end="")
+                print(f"{EXIT} {RESET}", end="")
             elif grid[gy][gx] == 1:
-                print(f"{WALL}  {RESET}", end="")
+                print(f"{WALL} {RESET}", end="")
             else:
-                print(f"{PATH}  {RESET}", end="")
+                print(f"{PATH} {RESET}", end="")
         print()
 
 def change_visibility():

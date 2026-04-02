@@ -19,13 +19,20 @@ def read_config() -> dict:
                     return None
             try:
                 res['WIDTH'] = int(res['WIDTH'])
+                if res['WIDTH'] <= 1:
+                    raise ValueError("WIDTH cannot be less than 2")
                 res['HEIGHT'] = int(res['HEIGHT'])
-
+                if res['HEIGHT'] <= 1:
+                    raise ValueError("HEIGHT cannot be less than 2")
                 exit_err = res['ENTRY'].split(",")
                 if len(exit_err) != 2:
                     raise ValueError(f"ENTRY: {exit_err}")
                 else:
                     res['ENTRY'] = (int(exit_err[0]), int(exit_err[1]))
+                    if res['ENTRY'][0] < 0 or res['ENTRY'][0] > res['WIDTH'] - 1:
+                        raise ValueError("ENTRY cannot be outside width x height")
+                    elif res['ENTRY'][1] < 0 or res['ENTRY'][1] > res['WIDTH'] - 1:
+                        raise ValueError("ENTRY cannot be outside width x height")
 
                 exit_err = res['EXIT'].split(",")
                 if len(exit_err) != 2:
@@ -50,3 +57,5 @@ def read_config() -> dict:
         return res
     else:
         print("No valid configuration file, please try again!")
+
+read_config()
