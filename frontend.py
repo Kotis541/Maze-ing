@@ -1,6 +1,4 @@
 from parser import read_config
-import sys
-import os
 from backend import MazeGenerator
 import math
 
