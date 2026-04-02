@@ -71,8 +71,11 @@ def change_color():
         for color in colors:
             yield color
 color_cycle = change_color()
-config = read_config()
-maze = MazeGenerator(config)
+try:
+    config = read_config()
+    maze = MazeGenerator(config)
+except Exception as e:
+    exit()
 genereted_list = maze.generate_maze()
 render_maze(genereted_list, config['ENTRY'], config['EXIT'])
 
@@ -90,10 +93,13 @@ while 1:
         print("[ERROR] - Please choose between 1 - 4!")
         continue
     if user_input == 1:
-        config = read_config()
-        maze = MazeGenerator(config)
-        genereted_list = maze.generate_maze()
-        render_maze(genereted_list, config['ENTRY'], config['EXIT'])
+        try:
+            config = read_config()
+            maze = MazeGenerator(config)
+            genereted_list = maze.generate_maze()
+            render_maze(genereted_list, config['ENTRY'], config['EXIT'])
+        except TypeError:
+            exit()
     elif user_input == 2:
         change_visibility()
     elif user_input == 3:

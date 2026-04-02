@@ -19,26 +19,30 @@ def read_config() -> dict:
                     return None
             try:
                 res['WIDTH'] = int(res['WIDTH'])
-                if res['WIDTH'] <= 1:
-                    raise ValueError("WIDTH cannot be less than 2")
+                if not (1 < res['WIDTH'] < 45):
+                    raise ValueError("invalid WIDTH size")
                 res['HEIGHT'] = int(res['HEIGHT'])
-                if res['HEIGHT'] <= 1:
-                    raise ValueError("HEIGHT cannot be less than 2")
+                if not (1 < res['WIDTH'] < 45):
+                    raise ValueError("invalid WIDTH size")
                 exit_err = res['ENTRY'].split(",")
                 if len(exit_err) != 2:
                     raise ValueError(f"ENTRY: {exit_err}")
                 else:
                     res['ENTRY'] = (int(exit_err[0]), int(exit_err[1]))
-                    if res['ENTRY'][0] < 0 or res['ENTRY'][0] > res['WIDTH'] - 1:
-                        raise ValueError("ENTRY cannot be outside width x height")
-                    elif res['ENTRY'][1] < 0 or res['ENTRY'][1] > res['WIDTH'] - 1:
-                        raise ValueError("ENTRY cannot be outside width x height")
+                    x = res['ENTRY'][0]
+                    y = res['ENTRY'][1] 
+                    if not (0 <= x < res['WIDTH']) or not (0 <= y < res['HEIGHT']):
+                        raise ValueError("ENTRY is out of bounds")
 
                 exit_err = res['EXIT'].split(",")
                 if len(exit_err) != 2:
                     raise ValueError(f"EXIT: {exit_err}")
                 else:
                     res['EXIT'] = (int(exit_err[0]), int(exit_err[1]))
+                    x = res['EXIT'][0]
+                    y = res['EXIT'][1] 
+                    if not (0 <= x < res['WIDTH']) or not (0 <= y < res['HEIGHT']):
+                        raise ValueError("EXIT is out of bounds")
 
                 bool_map = {"TRUE": True, "FALSE": False}
                 res['PERFECT'] = bool_map[res['PERFECT'].upper()]
@@ -58,4 +62,5 @@ def read_config() -> dict:
     else:
         print("No valid configuration file, please try again!")
 
-read_config()
+if __name__ == "__main__":
+    read_config()
