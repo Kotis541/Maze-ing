@@ -1,11 +1,13 @@
+#!/usr/local/env python3
+
 from parser import read_config
 from backend import MazeGenerator
 import math
 
-N = 0 # sever
-E = 1 # vychod
-S = 2 # jih
-W = 3 # zapad
+N = 0  # sever
+E = 1  # vychod
+S = 2  # jih
+W = 3  # zapad
 
 RESET = "\033[0m"
 LOGO = "\033[42m"
@@ -13,6 +15,7 @@ PATH = "\033[40m"
 ENTRY = "\033[44m"
 EXIT = "\033[41m"
 WALL = "\033[42m"
+
 
 def get_logo_cells(width: int, height: int) -> set[tuple[int, int]]:
     if width < 9 or height < 7:
@@ -81,6 +84,7 @@ def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple,
                 print(f"{PATH}  {RESET}", end="")
         print()
 
+
 def change_visibility():
     pass
 
@@ -97,49 +101,59 @@ def change_color():
         for color in colors:
             yield color
 
+
 color_cycle = change_color()
+
 try:
     config = read_config()
     maze = MazeGenerator(config)
-except Exception as e:
+except Exception:
     exit()
+
 genereted_list = maze.generate_maze()
 render_maze(genereted_list, config['ENTRY'], config['EXIT'])
 
-while True:
-    print()
-    print("=== A-Maze-ing ===")
-    print("1. Re-generate a new maze")
-    print("2. Show/Hide path from entry to exit")
-    print("3. Rotate maze colors")
-    print("4. Quit")
 
-    try:
-        user_input = int(input("Choice? (1 - 4): "))
-    except ValueError:
-        print("[ERROR] - Please choose between 1 - 4!")
-        continue
-    except KeyboardInterrupt:
-        print("\nThanks for playing our game!")
-        break
+def main() -> None:
+    while True:
+        print()
+        print("=== A-Maze-ing ===")
+        print("1. Re-generate a new maze")
+        print("2. Show/Hide path from entry to exit")
+        print("3. Rotate maze colors")
+        print("4. Quit")
 
-    if user_input == 1:
         try:
-            config = read_config()
-            maze = MazeGenerator(config)
-            genereted_list = maze.generate_maze()
-            render_maze(genereted_list, config['ENTRY'], config['EXIT'])
-        except TypeError:
-            exit()
+            user_input = int(input("Choice? (1 - 4): "))
+        except ValueError:
+            print("[ERROR] - Please choose between 1 - 4!")
+            continue
+        except KeyboardInterrupt:
+            print("\nThanks for playing our game!")
+            break
 
-    elif user_input == 2:
-        change_visibility()
+        if user_input == 1:
+            try:
+                config = read_config()
+                maze = MazeGenerator(config)
+                genereted_list = maze.generate_maze()
+                render_maze(genereted_list, config['ENTRY'], config['EXIT'])
+            except TypeError:
+                exit()
 
-    elif user_input == 3:
-        render_maze(genereted_list, config['ENTRY'], config['EXIT'], next(color_cycle))
+        elif user_input == 2:
+            change_visibility()
 
-    elif user_input == 4:
-        break
+        elif user_input == 3:
+            render_maze(genereted_list, config['ENTRY'], config['EXIT'],
+                        next(color_cycle))
 
-    else:
-        print("[ERROR] - Please choose between 1 - 4")
+        elif user_input == 4:
+            break
+
+        else:
+            print("[ERROR] - Please choose between 1 - 4")
+
+
+if __name__ == "__main__":
+    main()

@@ -30,8 +30,8 @@ def read_config() -> dict:
                 else:
                     res['ENTRY'] = (int(exit_err[0]), int(exit_err[1]))
                     x = res['ENTRY'][0]
-                    y = res['ENTRY'][1] 
-                    if not (0 <= x < res['WIDTH']) or not (0 <= y < res['HEIGHT']):
+                    y = res['ENTRY'][1]
+                    if not (0 <= x < res['WIDTH'])or not (0 <= y < res['HEIGHT']):
                         raise ValueError("ENTRY is out of bounds")
 
                 exit_err = res['EXIT'].split(",")
@@ -40,7 +40,7 @@ def read_config() -> dict:
                 else:
                     res['EXIT'] = (int(exit_err[0]), int(exit_err[1]))
                     x = res['EXIT'][0]
-                    y = res['EXIT'][1] 
+                    y = res['EXIT'][1]
                     if not (0 <= x < res['WIDTH']) or not (0 <= y < res['HEIGHT']):
                         raise ValueError("EXIT is out of bounds")
 
