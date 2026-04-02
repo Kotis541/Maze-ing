@@ -1,9 +1,10 @@
 import sys
 import os
+from typing import Any
 
 
-def read_config() -> dict:
-    res = {}
+def read_config() -> dict[str, Any] | None:
+    res: dict[str, Any] = {}
     if len(sys.argv) != 2:
         print("No valid configuration file, please try again!")
     elif os.path.isfile(sys.argv[1]):
@@ -30,8 +31,9 @@ def read_config() -> dict:
                 else:
                     res['ENTRY'] = (int(exit_err[0]), int(exit_err[1]))
                     x = res['ENTRY'][0]
-                    y = res['ENTRY'][1] 
-                    if not (0 <= x < res['WIDTH']) or not (0 <= y < res['HEIGHT']):
+                    y = res['ENTRY'][1]
+                    if (not (0 <= x < res['WIDTH'])
+                            or not (0 <= y < res['HEIGHT'])):
                         raise ValueError("ENTRY is out of bounds")
 
                 exit_err = res['EXIT'].split(",")
@@ -40,8 +42,9 @@ def read_config() -> dict:
                 else:
                     res['EXIT'] = (int(exit_err[0]), int(exit_err[1]))
                     x = res['EXIT'][0]
-                    y = res['EXIT'][1] 
-                    if not (0 <= x < res['WIDTH']) or not (0 <= y < res['HEIGHT']):
+                    y = res['EXIT'][1]
+                    if (not (0 <= x < res['WIDTH'])
+                            or not (0 <= y < res['HEIGHT'])):
                         raise ValueError("EXIT is out of bounds")
 
                 bool_map = {"TRUE": True, "FALSE": False}
@@ -61,6 +64,4 @@ def read_config() -> dict:
         return res
     else:
         print("No valid configuration file, please try again!")
-
-if __name__ == "__main__":
-    read_config()
+    return None

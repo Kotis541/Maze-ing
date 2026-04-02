@@ -11,6 +11,13 @@ class MazeGenerator():
         self._perfect = config['PERFECT']
         self._output = config['OUTPUT_FILE']
         self._maze = self._maze_init()
+        if self._width >= 9 and self._height >= 7:
+            self._logo = self._logo_init()
+            if list(self._entry) in self._logo or list(self._exit) in self._logo:
+                print("Current ENTRY or EXIT coordinates clash with 42 logo, try again")
+                raise ValueError("Current ENTRY or EXIT coordinates clash with 42 logo, try again")
+        else:
+            self._logo = []
 
     def _maze_init(self) -> list[list[list]]:
         maze: list[list[list]] = []
@@ -20,25 +27,26 @@ class MazeGenerator():
                 maze[i].append([1, 1, 1, 1])
         return maze
 
-# START A EXIT NESMI BYT V LOGU!!!!
+    def _logo_init(self) -> list[list[int]]:
+        c_width = math.ceil(self._width / 2)
+        c_height = math.ceil(self._height / 2)
+        logo = [
+            [c_width - 2, c_height], [c_width - 3, c_height],
+            [c_width - 4, c_height], [c_width - 4, c_height - 1],
+            [c_width - 4, c_height - 2], [c_width - 2, c_height + 1],
+            [c_width - 2, c_height + 2], [c_width, c_height],
+            [c_width, c_height + 1], [c_width, c_height + 2],
+            [c_width + 1, c_height + 2], [c_width + 2, c_height + 2],
+            [c_width, c_height], [c_width + 1, c_height],
+            [c_width + 2, c_height], [c_width + 2, c_height - 1],
+            [c_width + 2, c_height - 2], [c_width + 1, c_height - 2],
+            [c_width, c_height - 2]
+        ]
+        return logo
+
     def _was_visited(self, width: int, height: int) -> bool:
-        if self._width >= 9 and self._height >= 7:
-            c_width = math.ceil(self._width / 2)
-            c_height = math.ceil(self._height / 2)
-            logo = [
-                [c_width - 2, c_height], [c_width - 3, c_height],
-                [c_width - 4, c_height], [c_width - 4, c_height - 1],
-                [c_width - 4, c_height - 2], [c_width - 2, c_height + 1],
-                [c_width - 2, c_height + 2], [c_width, c_height],
-                [c_width, c_height + 1], [c_width, c_height + 2],
-                [c_width + 1, c_height + 2], [c_width + 2, c_height + 2],
-                [c_width, c_height], [c_width + 1, c_height],
-                [c_width + 2, c_height], [c_width + 2, c_height - 1],
-                [c_width + 2, c_height - 2], [c_width + 1, c_height - 2],
-                [c_width, c_height - 2]
-            ]
-            if [width, height] in logo:
-                return True
+        if [width, height] in self._logo:
+            return True
         return 0 in self._maze[width][height]
 
     def _get_unvisited_cells(self, x, y) -> list[list]:
@@ -95,3 +103,11 @@ class MazeGenerator():
                 f.write("\n")
             f.write(f"\n{str(self._entry)[1:-1]}\n{str(self._exit)[1:-1]}\n")
         return self._maze
+
+    def _calc_h(self, x1: int, x2: int, y1: int, y2: int) -> int:
+        return abs(x1 - x2) + abs(y1 - y2)
+    
+    def find_path(self) -> list[list[int, int]]:
+        open_set = [list(self._entry)]
+        current = open_set[-1]
+   #     while path[-1] != current_pos:
