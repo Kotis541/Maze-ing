@@ -19,8 +19,9 @@ clean:
 	rm -rf __pycache__ .mypy_cache
 
 lint:
-	$(PYTHON) -m flake8 .
+	$(PYTHON) -m flake8 .  --exclude=env
 	$(PYTHON) -m mypy .  \
+	 --exclude env
 	--warn-return-any \
 	--warn-unused-ignores \
 	--ignore-missing-imports \
