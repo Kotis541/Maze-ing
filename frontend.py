@@ -2,6 +2,7 @@ from parser import read_config
 import sys
 import os
 from backend import MazeGenerator
+import math
 
 N = 0 # sever
 E = 1 # vychod
@@ -9,20 +10,45 @@ S = 2 # jih
 W = 3 # zapad
 
 RESET = "\033[0m"
+LOGO = "\033[42m"
 PATH = "\033[40m"
 ENTRY = "\033[44m"
 EXIT = "\033[41m"
 WALL = "\033[42m"
+
+def get_logo_cells(width: int, height: int) -> set[tuple[int, int]]:
+    if width < 9 or height < 7:
+        return set()
+
+    c_width = math.ceil(width / 2)
+    c_height = math.ceil(height / 2)
+
+    logo = [
+        (c_width - 2, c_height), (c_width - 3, c_height),
+        (c_width - 4, c_height), (c_width - 4, c_height - 1),
+        (c_width - 4, c_height - 2), (c_width - 2, c_height + 1),
+        (c_width - 2, c_height + 2), (c_width, c_height),
+        (c_width, c_height + 1), (c_width, c_height + 2),
+        (c_width + 1, c_height + 2), (c_width + 2, c_height + 2),
+        (c_width + 1, c_height), (c_width + 2, c_height),
+        (c_width + 2, c_height - 1), (c_width + 2, c_height - 2),
+        (c_width + 1, c_height - 2), (c_width, c_height - 2)
+    ]
+    return set(logo)
+
 
 def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple,
                 wall_color=WALL) -> None:
     width = len(maze)
     height = len(maze[0]) if width else 0
     WALL = wall_color
+    LOGO = wall_color
 
     grid_h = height * 2 + 1
     grid_w = width * 2 + 1
     grid = [[1 for _ in range(grid_w)] for _ in range(grid_h)]
+    logo_cells = get_logo_cells(width, height)
+    logo_position = {(x * 2 + 1, y * 2 + 1) for (x, y) in logo_cells}
 
     for y in range(height):
         for x in range(width):
@@ -49,6 +75,8 @@ def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple,
                 print(f"{ENTRY}  {RESET}", end="")
             elif (gx, gy) == exit_pos:
                 print(f"{EXIT}  {RESET}", end="")
+            elif (gx, gy) in logo_position:
+                print(f"{LOGO}  {RESET}", end="")
             elif grid[gy][gx] == 1:
                 print(f"{WALL}  {RESET}", end="")
             else:
@@ -70,13 +98,14 @@ def change_color():
     while 1:
         for color in colors:
             yield color
+
 color_cycle = change_color()
 config = read_config()
 maze = MazeGenerator(config)
 genereted_list = maze.generate_maze()
 render_maze(genereted_list, config['ENTRY'], config['EXIT'])
 
-while 1:
+while True:
     print()
     print("=== A-Maze-ing ===")
     print("1. Re-generate a new maze")
