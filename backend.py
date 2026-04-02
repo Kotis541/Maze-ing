@@ -1,6 +1,7 @@
 import random
 import math
 
+
 class MazeGenerator():
     def __init__(self, config: dict):
         self._width = config['WIDTH']
@@ -19,11 +20,23 @@ class MazeGenerator():
                 maze[i].append([1, 1, 1, 1])
         return maze
 
+# START A EXIT NESMI BYT V LOGU!!!!
     def _was_visited(self, width: int, height: int) -> bool:
         if self._width >= 9 and self._height >= 7:
             c_width = math.ceil(self._width / 2)
             c_height = math.ceil(self._height / 2)
-            logo = [[c_width - 1, c_height]]
+            logo = [
+                [c_width - 2, c_height], [c_width - 3, c_height],
+                [c_width - 4, c_height], [c_width - 4, c_height - 1],
+                [c_width - 4, c_height - 2], [c_width - 2, c_height + 1],
+                [c_width - 2, c_height + 2], [c_width, c_height],
+                [c_width, c_height + 1], [c_width, c_height + 2],
+                [c_width + 1, c_height + 2], [c_width + 2, c_height + 2],
+                [c_width, c_height], [c_width + 1, c_height],
+                [c_width + 2, c_height], [c_width + 2, c_height - 1],
+                [c_width + 2, c_height - 2], [c_width + 1, c_height - 2],
+                [c_width, c_height - 2]
+            ]
             if [width, height] in logo:
                 return True
         return 0 in self._maze[width][height]
@@ -82,11 +95,3 @@ class MazeGenerator():
                 f.write("\n")
             f.write(f"\n{str(self._entry)[1:-1]}\n{str(self._exit)[1:-1]}\n")
         return self._maze
-
-
-########  TESTING  ############
-
-
-# config je output co ti da parser
-# config je treba na vytvoreni maze objektu
-# obejkt.generate_maze() ti vrati 3D list s 1 0 
