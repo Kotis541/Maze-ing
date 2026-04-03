@@ -109,8 +109,8 @@ class MazeGenerator():
     def _calc_h(self, x1: int, x2: int, y1: int, y2: int) -> int:
         return abs(x1 - x2) + abs(y1 - y2)
 
-    def _valid_cells(self, x: int, y: int) -> list[list[int, int]]:
-        res: list[list[int, int]] = []
+    def _valid_cells(self, x: int, y: int) -> list[list[int]]:
+        res: list[list[int]] = []
         if self._maze[x][y][0] == 0:
             res.append([x, y - 1])
         if self._maze[x][y][1] == 0:
@@ -121,7 +121,6 @@ class MazeGenerator():
             res.append([x - 1, y])
         return res
 
-    def find_path(self) -> list[list[int, int]]:
-        open_set = [list(self._entry)]
-        current = open_set[-1]
-        
+    # def find_path(self) -> list[list[int, int]]:
+        # open_set = [list(self._entry)]
+        # current = open_set[-1]

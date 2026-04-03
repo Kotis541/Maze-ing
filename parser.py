@@ -3,7 +3,7 @@ import os
 from typing import Any
 
 
-def read_config() -> dict[str, Any] | None:
+def read_config() -> dict[Any, Any] | None:
     res: dict[str, Any] = {}
     if len(sys.argv) != 2:
         print("No valid configuration file, please try again!")

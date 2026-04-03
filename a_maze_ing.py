@@ -2,6 +2,7 @@
 
 from parser import read_config
 from backend import MazeGenerator
+from typing import Any
 import math
 
 N = 0  # sever
@@ -104,8 +105,17 @@ def change_color():
 
 color_cycle = change_color()
 
-try:
+
+def load_config() -> dict[Any, Any]:
     config = read_config()
+    if config is None:
+        exit()
+    return config
+
+
+config = load_config()
+
+try:
     maze = MazeGenerator(config)
 except Exception:
     exit()
@@ -133,8 +143,8 @@ def main() -> None:
             break
 
         if user_input == 1:
+            config = load_config()
             try:
-                config = read_config()
                 maze = MazeGenerator(config)
                 genereted_list = maze.generate_maze()
                 render_maze(genereted_list, config['ENTRY'], config['EXIT'])
