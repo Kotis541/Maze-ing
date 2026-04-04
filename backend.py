@@ -106,8 +106,11 @@ class MazeGenerator():
             f.write(f"\n{str(self._entry)[1:-1]}\n{str(self._exit)[1:-1]}\n")
         return self._maze
 
-    def _calc_h(self, x1: int, x2: int, y1: int, y2: int) -> int:
-        return abs(x1 - x2) + abs(y1 - y2)
+    def _calc_h(self, coord1: tuple[int, int]) -> int:
+        return abs(coord1[0] - self._exit[0]) + abs(coord1[1] - self._exit[1])
+
+    def _calc_f(self, new_g: int, coord: tuple[int, int]) -> int:
+        return self._calc_h(coord) + new_g
 
     def _valid_cells(self, x: int, y: int) -> list[list[int]]:
         res: list[list[int]] = []
@@ -121,6 +124,46 @@ class MazeGenerator():
             res.append([x - 1, y])
         return res
 
-    # def find_path(self) -> list[list[int, int]]:
-        # open_set = [list(self._entry)]
-        # current = open_set[-1]
+    def find_path(self) -> list[list[int, int]]:
+        entry_tuple = tuple(self._entry)
+        exit_tuple = tuple(self._exit)
+        open_set = {
+            entry_tuple: {
+                'parent': None, 'g': 0, 'f': self._calc_h(entry_tuple)
+                }
+            }
+        closed_set = {}
+        while exit_tuple not in closed_set:
+            lowest_f = float('inf')
+            current = None
+            for coord, data in open_set.items():
+                if data['f'] < lowest_f:
+                    current = coord
+                    lowest_f = data['f']
+            temp_list = self._valid_cells(current[0], current[1])
+            for elem in temp_list:
+                x = tuple(elem)
+                if x not in closed_set:    
+                    new_g = open_set[current]['g'] + 1
+                    if x in open_set and open_set[x]['g'] <= new_g:
+                        continue
+                    else:
+                        f = self._calc_f(new_g, x)
+                        open_set[x] = {'parent': current, 'g': new_g, 'f': f}
+            closed_set[current] = open_set.pop(current)
+        final_path = [list(exit_tuple)]
+        x = closed_set[exit_tuple]['parent']
+        while x:
+            final_path.insert(0, list(x))
+            x = closed_set[x]['parent']
+        return final_path
+
+        #   while self._exit not in closed_set:
+        #   current = lowest f in open_set
+        #   open_set.update(self._valid_cells)
+        #   add current x,y,g + 1 to the appended cells but only if they dont have it or g is more then current + 1
+        #   if f in new cells == 0
+        #       calc f for new cells
+        #   closed_set.append(current)
+        #   open_set.pop(current)
+
