@@ -143,7 +143,7 @@ class MazeGenerator():
             temp_list = self._valid_cells(current[0], current[1])
             for elem in temp_list:
                 x = tuple(elem)
-                if x not in closed_set:    
+                if x not in closed_set:
                     new_g = open_set[current]['g'] + 1
                     if x in open_set and open_set[x]['g'] <= new_g:
                         continue
@@ -157,13 +157,3 @@ class MazeGenerator():
             final_path.insert(0, list(x))
             x = closed_set[x]['parent']
         return final_path
-
-        #   while self._exit not in closed_set:
-        #   current = lowest f in open_set
-        #   open_set.update(self._valid_cells)
-        #   add current x,y,g + 1 to the appended cells but only if they dont have it or g is more then current + 1
-        #   if f in new cells == 0
-        #       calc f for new cells
-        #   closed_set.append(current)
-        #   open_set.pop(current)
-
