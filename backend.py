@@ -87,6 +87,31 @@ class MazeGenerator():
                 self._maze[x1][y1][2] = 0
                 self._maze[x2][y2][0] = 0
 
+    def _gen_coord(self) -> list[int, int]:
+        while 1:
+            x = random.randrange(self._width - 1)
+            y = random.randrange(self._height - 1)
+            if [x, y] not in self._logo:
+                return [x, y]
+
+    def _non_logo(self, coord: list[int, int]) -> list[list]:
+        res = []
+        x = coord[0]
+        y = coord[1]
+        if x - 1 >= 0:
+            if [x - 1, y] not in self._logo:
+                res.append([x - 1, y])
+        if x + 1 <= self._width:
+            if [x + 1, y] not in self._logo:
+                res.append([x + 1, y])
+        if y + 1 <= self._height:
+            if [x, y + 1] not in self._logo:
+                res.append([x, y + 1])
+        if y - 1 >= 0:
+            if [x, y - 1] not in self._logo:
+                res.append([x, y - 1])
+        return res
+
     def generate_maze(self) -> list[list[list]]:
         path = [self._entry]
         while path:
@@ -96,6 +121,12 @@ class MazeGenerator():
             else:
                 path.append(random.choice(cells))
                 self._break_walls(path)
+        if not self._perfect:
+            walls_down = round(self._width * self._height * 0.35)
+            for i in range(0, walls_down):
+                coord = self._gen_coord()
+                cells = self._non_logo(coord)
+                self._break_walls([coord, random.choice(cells)])
         with open(self._output, "w") as f:
             for y in range(0, self._height):
                 for x in range(0, self._width):
@@ -123,6 +154,18 @@ class MazeGenerator():
         if self._maze[x][y][3] == 0:
             res.append([x - 1, y])
         return res
+
+    def _push_direction(self, coord1: list, coord2: list) -> str:
+        if coord1[0] != coord2[0]:
+            if coord1[0] > coord2[0]:
+                return "W"
+            else:
+                return "E"
+        elif coord1[1] != coord2[1]:
+            if coord1[1] > coord2[1]:
+                return "N"
+            else:
+                return "S"
 
     def find_path(self) -> list[list[int]]:
         entry_tuple = tuple(self._entry)
@@ -153,7 +196,13 @@ class MazeGenerator():
             closed_set[current] = open_set.pop(current)
         final_path = [list(exit_tuple)]
         x = closed_set[exit_tuple]['parent']
+        output = self._push_direction(list(x), list(exit_tuple))
         while x:
             final_path.insert(0, list(x))
+            temp = list(x)
             x = closed_set[x]['parent']
+            if x:
+                output = self._push_direction(list(x), temp) + output
+        with open(self._output, "a") as f:
+            f.write(f"{output}\n")
         return final_path
