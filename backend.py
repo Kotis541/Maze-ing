@@ -89,8 +89,8 @@ class MazeGenerator():
 
     def _gen_coord(self) -> list[int, int]:
         while 1:
-            x = random.randrange(self._width - 1)
-            y = random.randrange(self._height - 1)
+            x = random.randrange(self._width)
+            y = random.randrange(self._height)
             if [x, y] not in self._logo:
                 return [x, y]
 
@@ -101,10 +101,10 @@ class MazeGenerator():
         if x - 1 >= 0:
             if [x - 1, y] not in self._logo:
                 res.append([x - 1, y])
-        if x + 1 <= self._width:
+        if x + 1 < self._width:
             if [x + 1, y] not in self._logo:
                 res.append([x + 1, y])
-        if y + 1 <= self._height:
+        if y + 1 < self._height:
             if [x, y + 1] not in self._logo:
                 res.append([x, y + 1])
         if y - 1 >= 0:
@@ -126,7 +126,8 @@ class MazeGenerator():
             for i in range(0, walls_down):
                 coord = self._gen_coord()
                 cells = self._non_logo(coord)
-                self._break_walls([coord, random.choice(cells)])
+                if cells:
+                    self._break_walls([coord, random.choice(cells)])
         with open(self._output, "w") as f:
             for y in range(0, self._height):
                 for x in range(0, self._width):
