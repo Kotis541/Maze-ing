@@ -126,8 +126,8 @@ def load_config() -> dict[Any, Any]:
 def main() -> None:
     config = load_config()
     color_cycle = change_color(reverse=True)
-    wall_color = next(color_cycle) 
-    path_display_color = next(color_cycle) 
+    wall_color = next(color_cycle)
+    path_display_color = next(color_cycle)
 
     try:
         maze = MazeGenerator(config)
@@ -136,9 +136,12 @@ def main() -> None:
 
     genereted_list = maze.generate_maze()
     path = maze.find_path()
-    show_path = False 
-    render_maze(genereted_list, config['ENTRY'], config['EXIT'],
-                path=path if show_path else None, path_color=path_display_color)
+    show_path = False
+    render_maze(genereted_list,
+                config['ENTRY'],
+                config['EXIT'],
+                path=path if show_path else None,
+                path_color=path_display_color)
 
     while True:
         print()
@@ -164,21 +167,33 @@ def main() -> None:
                 genereted_list = maze.generate_maze()
                 path = maze.find_path()
                 show_path = False
-                render_maze(genereted_list, config['ENTRY'], config['EXIT'],
-                            wall_color, path=path if show_path else None, path_color=path_display_color)
+                render_maze(genereted_list,
+                            config['ENTRY'],
+                            config['EXIT'],
+                            wall_color,
+                            path=path if show_path else None,
+                            path_color=path_display_color)
             except TypeError:
                 exit()
 
         elif user_input == 2:
             show_path = not show_path
-            render_maze(genereted_list, config['ENTRY'], config["EXIT"],
-                        wall_color,path=path if show_path else None, path_color=path_display_color)
+            render_maze(genereted_list,
+                        config['ENTRY'],
+                        config["EXIT"],
+                        wall_color,
+                        path=path if show_path else None,
+                        path_color=path_display_color)
 
         elif user_input == 3:
             path_display_color = wall_color
             wall_color = next(color_cycle)
-            render_maze(genereted_list, config['ENTRY'], config["EXIT"],
-                        wall_color, path=path if show_path else None, path_color=path_display_color)
+            render_maze(genereted_list,
+                        config['ENTRY'],
+                        config["EXIT"],
+                        wall_color,
+                        path=path if show_path else None,
+                        path_color=path_display_color)
 
         elif user_input == 4:
             break
