@@ -16,6 +16,7 @@ PATH = "\033[40m"
 ENTRY = "\033[44m"
 EXIT = "\033[41m"
 WALL = "\033[42m"
+PATH_COLOR = "\033[46m"
 
 
 def get_logo_cells(width: int, height: int) -> set[tuple[int, int]]:
@@ -40,11 +41,22 @@ def get_logo_cells(width: int, height: int) -> set[tuple[int, int]]:
 
 
 def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple,
-                wall_color=WALL) -> None:
+                wall_color=WALL, path=None, path_color=None) -> None:
     width = len(maze)
     height = len(maze[0]) if width else 0
     WALL = wall_color
     LOGO = wall_color
+    path_position = set()
+    if path:
+        for i in range(len(path)):
+            x, y = path[i]
+            path_position.add((x * 2 + 1, y * 2 + 1))
+            if i == 0:
+                continue
+            px, py = path[i - 1]
+            mx = x + px
+            my = y + py
+            path_position.add((mx + 1, my + 1))
 
     grid_h = height * 2 + 1
     grid_w = width * 2 + 1
@@ -79,6 +91,8 @@ def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple,
                 print(f"{EXIT}  {RESET}", end="")
             elif (gx, gy) in logo_position:
                 print(f"{LOGO}  {RESET}", end="")
+            elif (gx, gy) in path_position:
+                print(f"{path_color}  {RESET}", end="")
             elif grid[gy][gx] == 1:
                 print(f"{WALL}  {RESET}", end="")
             else:
@@ -86,11 +100,7 @@ def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple,
         print()
 
 
-def change_visibility():
-    pass
-
-
-def change_color():
+def change_color(reverse: bool = False):
     colors = [
         "\033[47m",
         "\033[43m",
@@ -98,12 +108,12 @@ def change_color():
         "\033[46m",
         "\033[42m"
     ]
+    idx = len(colors) - 1 if reverse else 0
+    step = -1 if reverse else 1
+
     while 1:
-        for color in colors:
-            yield color
-
-
-color_cycle = change_color()
+        yield colors[idx]
+        idx = (idx + step) % len(colors)
 
 
 def load_config() -> dict[Any, Any]:
@@ -113,18 +123,23 @@ def load_config() -> dict[Any, Any]:
     return config
 
 
-config = load_config()
-
-try:
-    maze = MazeGenerator(config)
-except Exception:
-    exit()
-
-genereted_list = maze.generate_maze()
-render_maze(genereted_list, config['ENTRY'], config['EXIT'])
-
-
 def main() -> None:
+    config = load_config()
+    color_cycle = change_color(reverse=True)
+    wall_color = next(color_cycle) 
+    path_display_color = next(color_cycle) 
+
+    try:
+        maze = MazeGenerator(config)
+    except Exception:
+        exit()
+
+    genereted_list = maze.generate_maze()
+    path = maze.find_path()
+    show_path = False 
+    render_maze(genereted_list, config['ENTRY'], config['EXIT'],
+                path=path if show_path else None, path_color=path_display_color)
+
     while True:
         print()
         print("=== A-Maze-ing ===")
@@ -147,16 +162,23 @@ def main() -> None:
             try:
                 maze = MazeGenerator(config)
                 genereted_list = maze.generate_maze()
-                render_maze(genereted_list, config['ENTRY'], config['EXIT'])
+                path = maze.find_path()
+                show_path = False
+                render_maze(genereted_list, config['ENTRY'], config['EXIT'],
+                            wall_color, path=path if show_path else None, path_color=path_display_color)
             except TypeError:
                 exit()
 
         elif user_input == 2:
-            change_visibility()
+            show_path = not show_path
+            render_maze(genereted_list, config['ENTRY'], config["EXIT"],
+                        wall_color,path=path if show_path else None, path_color=path_display_color)
 
         elif user_input == 3:
-            render_maze(genereted_list, config['ENTRY'], config['EXIT'],
-                        next(color_cycle))
+            path_display_color = wall_color
+            wall_color = next(color_cycle)
+            render_maze(genereted_list, config['ENTRY'], config["EXIT"],
+                        wall_color, path=path if show_path else None, path_color=path_display_color)
 
         elif user_input == 4:
             break

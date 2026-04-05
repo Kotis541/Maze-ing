@@ -124,7 +124,7 @@ class MazeGenerator():
             res.append([x - 1, y])
         return res
 
-    def find_path(self) -> list[list[int, int]]:
+    def find_path(self) -> list[list[int]]:
         entry_tuple = tuple(self._entry)
         exit_tuple = tuple(self._exit)
         open_set = {
