@@ -1,7 +1,7 @@
 #!/usr/local/env python3
 
 from parser import read_config
-from backend import MazeGenerator
+from maze_gen import MazeGenerator
 from typing import Any
 import math
 
