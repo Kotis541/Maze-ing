@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mazegen"
+version = "1.0.0"
+authors = [
+	{ name = "pzavada", email = "pzavada@student.42prague.com" },
+	{ name = "vokotera", email = "vokotera@student.42prague.com" }
+]
+description = "A procedural maze generator"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.setuptools]
+py-modules = ["maze-gen"]
