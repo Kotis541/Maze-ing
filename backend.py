@@ -11,13 +11,15 @@ class MazeGenerator():
         self._perfect = config['PERFECT']
         self._output = config['OUTPUT_FILE']
         self._maze = self._maze_init()
+        if 'SEED' in config:
+            random.seed(config['SEED'])
         if self._width >= 9 and self._height >= 7:
             self._logo = self._logo_init()
             if (list(self._entry) in self._logo
                     or list(self._exit) in self._logo):
                 x = "ENTRY or EXIT coordinates clash with 42 logo, try again"
                 print(x)
-                raise ValueError({x})
+                raise ValueError(x)
         else:
             self._logo = []
 
@@ -122,7 +124,7 @@ class MazeGenerator():
                 path.append(random.choice(cells))
                 self._break_walls(path)
         if not self._perfect:
-            walls_down = round(self._width * self._height * 0.35)
+            walls_down = round(self._width * self._height * 0.25)
             for i in range(0, walls_down):
                 coord = self._gen_coord()
                 cells = self._non_logo(coord)

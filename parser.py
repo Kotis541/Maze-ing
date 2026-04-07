@@ -35,7 +35,6 @@ def read_config() -> dict[Any, Any] | None:
                     if (not (0 <= x < res['WIDTH'])
                             or not (0 <= y < res['HEIGHT'])):
                         raise ValueError("ENTRY is out of bounds")
-
                 exit_err = res['EXIT'].split(",")
                 if len(exit_err) != 2:
                     raise ValueError(f"EXIT: {exit_err}")
@@ -46,9 +45,13 @@ def read_config() -> dict[Any, Any] | None:
                     if (not (0 <= x < res['WIDTH'])
                             or not (0 <= y < res['HEIGHT'])):
                         raise ValueError("EXIT is out of bounds")
-
                 bool_map = {"TRUE": True, "FALSE": False}
                 res['PERFECT'] = bool_map[res['PERFECT'].upper()]
+                if not res['OUTPUT_FILE']:
+                    raise ValueError("OUTPUT_FILE")
+                if 'SEED' in res:
+                    if not res['SEED']:
+                        raise ValueError("SEED")
             except KeyError as e:
                 print(
                     "Configuration Error: Missing or",
