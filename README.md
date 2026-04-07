@@ -51,7 +51,25 @@ OUTPUT_FILE=maze.txt
 PERFECT=True
 SEED=42
 ```
+<h1>Team & Project Management</h1>
 
+## Roles
+ - <vokotera> Visual rendering, user interface, README file and Makefile
+ - <pzavada> Maze generation algorithm, ouput file, config parsing 
+
+## Planning
+We used AI to help us organize the project into 2 specific roles. This allowed us to:
+ - Divide: Each of us took full responsibility for one part
+ - Work Separately: We started working on our own section 
+Like that we were able to work how we define until end
+
+## What worked well
+Team working worked very well and the algorithm that we chose to use.
+We could improve maze rendering by using miniLBX or different colors next time.
+
+## Specific tools?
+- flake8, mypy for code quality
+- Claude AI and gemini for brainstorming and helping with a code
 
 <h1>Resources</h1>
 
