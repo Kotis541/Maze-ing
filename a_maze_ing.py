@@ -142,7 +142,8 @@ def main() -> None:
 
     try:
         maze = MazeGenerator(config)
-    except Exception:
+    except Exception as e:
+        print(e)
         exit()
 
     genereted_list = maze.generate_maze()
