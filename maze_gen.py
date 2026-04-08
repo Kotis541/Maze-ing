@@ -1,5 +1,6 @@
 import random
 import math
+from typing import Any
 
 
 class MazeGenerator():
@@ -206,18 +207,19 @@ class MazeGenerator():
                 return "N"
             else:
                 return "S"
+        return "None"
 
     def find_path(self) -> list[list[int]]:
         """Finds a path from the entry to the exit using the A* algorithm."""
 
         entry_tuple = tuple(self._entry)
         exit_tuple = tuple(self._exit)
-        open_set = {
+        open_set: dict[tuple[int, int], dict[str, Any]] = {
             entry_tuple: {
                 'parent': None, 'g': 0, 'f': self._calc_h(entry_tuple)
                 }
             }
-        closed_set = {}
+        closed_set: dict[tuple[int, int], dict[str, Any]] = {}
         while exit_tuple not in closed_set:
             lowest_f = float('inf')
             current = None
@@ -225,9 +227,11 @@ class MazeGenerator():
                 if data['f'] < lowest_f:
                     current = coord
                     lowest_f = data['f']
+            if current is None:
+                break
             temp_list = self._valid_cells(current[0], current[1])
             for elem in temp_list:
-                x = tuple(elem)
+                x: tuple[int, int] = (elem[0], elem[1])
                 if x not in closed_set:
                     new_g = open_set[current]['g'] + 1
                     if x in open_set and open_set[x]['g'] <= new_g:
@@ -237,14 +241,14 @@ class MazeGenerator():
                         open_set[x] = {'parent': current, 'g': new_g, 'f': f}
             closed_set[current] = open_set.pop(current)
         final_path = [list(exit_tuple)]
-        x = closed_set[exit_tuple]['parent']
-        output = self._push_direction(list(x), list(exit_tuple))
-        while x:
-            final_path.insert(0, list(x))
-            temp = list(x)
-            x = closed_set[x]['parent']
-            if x:
-                output = self._push_direction(list(x), temp) + output
-        with open(self._output, "a") as f:
-            f.write(f"{output}\n")
+        node = closed_set[exit_tuple]['parent']
+        output = self._push_direction(list(node), list(exit_tuple))
+        while node:
+            final_path.insert(0, list(node))
+            temp = list(node)
+            node = closed_set[node]['parent']
+            if node:
+                output = self._push_direction(list(node), temp) + output
+        with open(self._output, "a") as file:
+            file.write(f"{output}\n")
         return final_path
