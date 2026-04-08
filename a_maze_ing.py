@@ -20,6 +20,11 @@ PATH_COLOR = "\033[46m"
 
 
 def get_logo_cells(width: int, height: int) -> set[tuple[int, int]]:
+    """
+    Returns a set of (x, y) coordinates representing the cells
+    that form a logo in the center of the maze.
+    """
+
     if width < 9 or height < 7:
         return set()
 
@@ -42,6 +47,8 @@ def get_logo_cells(width: int, height: int) -> set[tuple[int, int]]:
 
 def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple,
                 wall_color=WALL, path=None, path_color=None) -> None:
+    """Renders the maze in the terminal using colored output."""
+
     width = len(maze)
     height = len(maze[0]) if width else 0
     WALL = wall_color
@@ -101,6 +108,8 @@ def render_maze(maze: list[list[list[int]]], entry: tuple, exit: tuple,
 
 
 def change_color(reverse: bool = False):
+    """Cycles through a predefined list of ANSI color codes."""
+
     colors = [
         "\033[47m",
         "\033[43m",
@@ -117,6 +126,7 @@ def change_color(reverse: bool = False):
 
 
 def load_config() -> dict[Any, Any]:
+    """Loads the maze configuration from an external source."""
     config = read_config()
     if config is None:
         exit()
@@ -124,6 +134,7 @@ def load_config() -> dict[Any, Any]:
 
 
 def main() -> None:
+    """The main entry point for the maze game."""
     config = load_config()
     color_cycle = change_color(reverse=True)
     wall_color = next(color_cycle)

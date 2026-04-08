@@ -4,6 +4,11 @@ from typing import Any
 
 
 def read_config() -> dict[Any, Any] | None:
+    """
+    Reads and validates the maze configuration
+    from a file provided as a command-line argument.
+    """
+
     res: dict[str, Any] = {}
     if len(sys.argv) != 2:
         print("No valid configuration file, please try again!")

@@ -3,7 +3,11 @@ import math
 
 
 class MazeGenerator():
+    """Class for generating and solving mazes with optional logo placement."""
+
     def __init__(self, config: dict):
+        """Initializes the MazeGenerator with configuration parameters."""
+
         self._width = config['WIDTH']
         self._height = config['HEIGHT']
         self._entry = config['ENTRY']
@@ -23,9 +27,12 @@ class MazeGenerator():
             except ValueError as e:
                 print(e)
         else:
+            print("Maze dimensions are too small for logo!")
             self._logo = []
 
     def _maze_init(self) -> list[list[list]]:
+        """Initializes the maze grid with all walls present."""
+
         maze: list[list[list]] = []
         for i in range(0, self._width):
             maze.append([])
@@ -34,6 +41,10 @@ class MazeGenerator():
         return maze
 
     def _logo_init(self) -> list[list[int]]:
+        """Calculates the coordinates for the
+        logo in the center of the maze.
+        """
+
         c_width = math.ceil(self._width / 2)
         c_height = math.ceil(self._height / 2)
         logo = [
@@ -51,11 +62,15 @@ class MazeGenerator():
         return logo
 
     def _was_visited(self, width: int, height: int) -> bool:
+        """Checks if a cell has been visited or is part of the logo."""
+
         if [width, height] in self._logo:
             return True
         return 0 in self._maze[width][height]
 
     def _get_unvisited_cells(self, x, y) -> list[list]:
+        """Returns a list of unvisited neighboring cells for a given cell."""
+
         res = []
         if y - 1 >= 0:
             if not self._was_visited(x, y - 1):
@@ -72,6 +87,8 @@ class MazeGenerator():
         return res
 
     def _break_walls(self, path: list[list]) -> None:
+        """Removes the wall between the last two cells in the given path."""
+
         x1 = path[-1][0]
         x2 = path[-2][0]
         y1 = path[-1][1]
@@ -92,6 +109,8 @@ class MazeGenerator():
                 self._maze[x2][y2][0] = 0
 
     def _gen_coord(self) -> list[int, int]:
+        """Generates random coordinates not occupied by the logo."""
+
         while 1:
             x = random.randrange(self._width)
             y = random.randrange(self._height)
@@ -99,6 +118,11 @@ class MazeGenerator():
                 return [x, y]
 
     def _non_logo(self, coord: list[int, int]) -> list[list]:
+        """
+        Returns neighboring cells of a
+        coordinate that are not part of the logo.
+        """
+
         res = []
         x = coord[0]
         y = coord[1]
@@ -117,6 +141,9 @@ class MazeGenerator():
         return res
 
     def generate_maze(self) -> list[list[list]]:
+        """Generates the maze using randomized DFS
+        and optionally removes extra walls."""
+
         path = [self._entry]
         while path:
             cells = self._get_unvisited_cells(path[-1][0], path[-1][1])
@@ -143,12 +170,18 @@ class MazeGenerator():
         return self._maze
 
     def _calc_h(self, coord1: tuple[int, int]) -> int:
+        """Calculates the Manhattan distance from a cell to the exit."""
+
         return abs(coord1[0] - self._exit[0]) + abs(coord1[1] - self._exit[1])
 
     def _calc_f(self, new_g: int, coord: tuple[int, int]) -> int:
+        """Calculates the f-score for A* pathfinding."""
+
         return self._calc_h(coord) + new_g
 
     def _valid_cells(self, x: int, y: int) -> list[list[int]]:
+        """Returns a list of accessible neighboring cells from a given cell."""
+
         res: list[list[int]] = []
         if self._maze[x][y][0] == 0:
             res.append([x, y - 1])
@@ -161,6 +194,8 @@ class MazeGenerator():
         return res
 
     def _push_direction(self, coord1: list, coord2: list) -> str:
+        """Determines the direction from coord1 to coord2."""
+
         if coord1[0] != coord2[0]:
             if coord1[0] > coord2[0]:
                 return "W"
@@ -173,6 +208,8 @@ class MazeGenerator():
                 return "S"
 
     def find_path(self) -> list[list[int]]:
+        """Finds a path from the entry to the exit using the A* algorithm."""
+
         entry_tuple = tuple(self._entry)
         exit_tuple = tuple(self._exit)
         open_set = {
