@@ -28,7 +28,7 @@ or
 
 **Configuration File**
 
-The configuration file uses `KEY=VALUE` pairs (one per line). Lines starting with `#` are comments and are ignored.
+The configuration file uses `KEY=VALUE` pairs (one per line). Lines starting with `#` are comments and are ignored - barring the `SEED` all pairs are required.
 
 | Key           | Description                          | Example                  
 |---------------|--------------------------------------|--------------------------
@@ -53,6 +53,31 @@ SEED=42
 ```
 <h1>Team & Project Management</h1>
 
+## Maze generation algorithm
+For our maze generation, we implemented the Recursive Backtracking (Randomized Depth-First Search) algorithm. The process begins with a grid that is completely walled off and proceeds as follows starting from the entry coordinate:
+
+- Randomly choose one unvisited neighboring cell.
+- Step into that cell and break the connecting wall.
+- If no neighboring cells are unvisited, backtrack along the path until an unvisited neighbor is found.
+- Continue this process until all cells in the grid have been visited.
+
+This algorithm inherently generates a "perfect" maze (meaning there is exactly one path between any two points and no loops). To allow for the creation of non-perfect mazes, we introduced a post-generation step:
+
+- Randomly select a valid coordinate and break a wall connecting it to a non-logo neighbor.
+- Repeat this process until an amount of walls equal to 25% of the total grid area has been removed, creating multiple potential paths.
+
+### Why we chose this algorithm
+We selected recursive backtracking because it is highly intuitive, straightforward to implement, and efficient. It reliably generates long, winding corridors that make for visually interesting and challenging unique mazes without requiring overly complex data structures.
+
+### Code Reusability
+The codebase is built using a modular Object-Oriented approach, making several components easily reusable for future projects:
+
+- The MazeGenerator Class: Because the class is entirely driven by a config dictionary passed during initialization, you can drop this exact class into another Python project. You can generate completely different mazes just by feeding it a new dictionary with different dimensions, seeds, or entry/exit points.
+
+- Decoupled Pathfinding: The A* pathfinding logic (find_path, _calc_h, _calc_f) is separated from the generation logic. It simply reads the existing _maze array. This means you could bypass the recursive backtracking entirely, load a pre-made maze from a file into the _maze array, and still reuse the A* algorithm to solve it.
+
+- Grid Utilities: Helper methods like _get_unvisited_cells, _valid_cells, and the directional mapping (_push_direction) are generic enough to be ripped out and reused in other 2D grid-based games or alternative maze generation algorithms (like Prim's or Kruskal's).
+
 ## Roles
  - <vokotera> Visual rendering, user interface, README file and Makefile
  - <pzavada> Maze generation algorithm, ouput file, config parsing 
@@ -69,7 +94,7 @@ We could improve maze rendering by using miniLBX or different colors next time.
 
 ## Specific tools?
 - flake8, mypy for code quality
-- Claude AI and gemini for brainstorming and helping with a code
+- Claude AI and gemini for brainstorming and helping with code
 
 <h1>Resources</h1>
 
