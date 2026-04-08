@@ -4,7 +4,7 @@ from typing import Any
 
 
 class MazeGenerator():
-    """Class for generating and solving mazes with optional logo placement."""
+    """Class for generating and solving mazes with 42 logo placement."""
 
     def __init__(self, config: dict):
         """Initializes the MazeGenerator with configuration parameters."""
@@ -20,13 +20,10 @@ class MazeGenerator():
             random.seed(config['SEED'])
         if self._width >= 9 and self._height >= 7:
             self._logo = self._logo_init()
-            try:
-                if (list(self._entry) in self._logo
-                        or list(self._exit) in self._logo):
-                    x = "ENTRY or EXIT coordinates clash with 42 logo."
-                    raise ValueError(x)
-            except ValueError as e:
-                print(e)
+            if (list(self._entry) in self._logo
+                    or list(self._exit) in self._logo):
+                x = "ENTRY or EXIT coordinates clash with 42 logo."
+                raise ValueError(x)
         else:
             print("Maze dimensions are too small for logo!")
             self._logo = []
@@ -109,7 +106,7 @@ class MazeGenerator():
                 self._maze[x1][y1][2] = 0
                 self._maze[x2][y2][0] = 0
 
-    def _gen_coord(self) -> list[int, int]:
+    def _gen_coord(self) -> list[int]:
         """Generates random coordinates not occupied by the logo."""
 
         while 1:
@@ -118,7 +115,7 @@ class MazeGenerator():
             if [x, y] not in self._logo:
                 return [x, y]
 
-    def _non_logo(self, coord: list[int, int]) -> list[list]:
+    def _non_logo(self, coord: list[int]) -> list[list]:
         """
         Returns neighboring cells of a
         coordinate that are not part of the logo.
