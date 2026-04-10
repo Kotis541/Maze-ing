@@ -15,4 +15,4 @@ requires-python = ">=3.10"
 dependencies = []
 
 [tool.setuptools]
-py-modules = ["maze-gen"]
+py-modules = ["maze_gen"]

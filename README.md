@@ -78,9 +78,58 @@ The codebase is built using a modular Object-Oriented approach, making several c
 
 - Grid Utilities: Helper methods like _get_unvisited_cells, _valid_cells, and the directional mapping (_push_direction) are generic enough to be ripped out and reused in other 2D grid-based games or alternative maze generation algorithms (like Prim's or Kruskal's).
 
+## Reusing the Maze Generator Module
+
+This project includes a standalone Python package (`.whl` and `.tar.gz`) that allows you to easily reuse the maze generation and pathfinding logic.
+
+### Installation
+
+Install the module locally using `pip` (a virtual environment is recommended):
+
+```bash
+# 1. Install build
+pip install build
+
+#2. Build the module
+python -m build --wheel
+
+# 3. Install the built wheel
+pip install ./dist/mazegen-1.0.0-py3-none-any.whl
+
+# 4. Now this works
+pip show mazegen
+```
+
+### Usage example
+
+You can import the MazeGenerator class, pass custom parameters via a dictionary, and directly access both the maze structure and the calculated solution.
+```ini
+from maze_gen import MazeGenerator
+
+# 1. Define custom parameters
+config = {
+    'WIDTH': 25,
+    'HEIGHT': 25,
+    'ENTRY': (0, 0),
+    'EXIT': (24, 24),
+    'PERFECT': True,
+    'OUTPUT_FILE': 'maze.txt',
+    'SEED': 42
+}
+
+# 2. Instantiate the generator
+generator = MazeGenerator(config)
+
+# 3. Access the generated structure (returns a 3D list of cells and walls)
+maze_grid = generator.generate_maze()
+
+# 4. Access the solution (returns the A* path as a list of coordinates)
+solution_path = generator.find_path()
+```
+
 ## Roles
- - <vokotera> Visual rendering, user interface, README file and Makefile
- - <pzavada> Maze generation algorithm, ouput file, config parsing 
+ - vokotera - Visual rendering, user interface, README file and Makefile
+ - pzavada - Maze generation algorithm, ouput file, config parsing 
 
 ## Planning
 We used AI to help us organize the project into 2 specific roles. This allowed us to:
@@ -99,6 +148,7 @@ We could improve maze rendering by using miniLBX or different colors next time.
 <h1>Resources</h1>
 
  - [Youtube - Maze algorithm](https://www.youtube.com/watch?is=g33h4t98knfFA5SB&v=jZQ31-4_8KM)
+ - https://www.geeksforgeeks.org/ 
 
 ### AI usage
 - AI tools were used during the development of this project to gain a deeper understanding of the core concepts and to assist with coding and debugging. No code was blindly copy-pasted without a full comprehension of its functionality

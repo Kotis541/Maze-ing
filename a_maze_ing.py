@@ -1,4 +1,4 @@
-#!/usr/local/env python3
+#!/usr/bin/env python3
 
 from parser import read_config
 from maze_gen import MazeGenerator

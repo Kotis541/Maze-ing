@@ -57,6 +57,8 @@ def read_config() -> dict[Any, Any] | None:
                 if 'SEED' in res:
                     if not res['SEED']:
                         raise ValueError("SEED")
+                if res['ENTRY'] == res['EXIT']:
+                    raise Exception("ENTRY cannot be the same as EXIT")
             except KeyError as e:
                 print(
                     "Configuration Error: Missing or",
